@@ -61,7 +61,7 @@ class PytchatCore:
     def __init__(self, video_id,
                  seektime=-1,
                  processor=DefaultProcessor(),
-                 client = httpx.Client(http2=True),
+                 client=None,
                  interruptable=True,
                  force_replay=False,
                  topchat_only=False,
@@ -69,6 +69,8 @@ class PytchatCore:
                  logger=config.logger(__name__),
                  replay_continuation=None
                  ):
+        if client is None:
+            client = httpx.Client(http2=True)
         self._client = client
         self._video_id = util.extract_video_id(video_id)
         self.seektime = seektime
