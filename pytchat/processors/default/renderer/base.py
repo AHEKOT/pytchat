@@ -1,3 +1,4 @@
+import time
 from datetime import datetime
 
 
@@ -16,7 +17,7 @@ class BaseRenderer:
 
     def get_snippet(self):
         self.chat.id = self.item.get('id')
-        timestampUsec = int(self.item.get("timestampUsec", 0))
+        timestampUsec = int(self.item.get("timestampUsec", time.time() * 1000000))
         self.chat.timestamp = int(timestampUsec / 1000)
         tst = self.item.get("timestampText")
         if tst:
@@ -41,8 +42,14 @@ class BaseRenderer:
         )
         self.chat.author.channelId = self.item.get("authorExternalChannelId")
         self.chat.author.channelUrl = "http://www.youtube.com/channel/" + self.chat.author.channelId
-        self.chat.author.name = self.item["authorName"]["simpleText"]
-        self.chat.author.imageUrl = self.item["authorPhoto"]["thumbnails"][1]["url"]
+        if self.item.get("authorName"):
+            self.chat.author.name = self.item["authorName"].get("simpleText")
+        else:
+            self.chat.author.name = ""
+        if self.item.get("authorPhoto"):
+            self.chat.author.imageUrl = self.item["authorPhoto"]["thumbnails"][1]["url"]
+        else:
+            self.chat.author.imageUrl = ""
 
     def get_message(self, item):
         message = ''
@@ -59,12 +66,17 @@ class BaseRenderer:
                     'url': r['emoji']['image']['thumbnails'][0].get('url')
                 })
             else:
-                message += r.get('text', '')
-                message_ex.append(r.get('text', ''))
+                if r.get('navigationEndpoint', {}).get('urlEndpoint'):
+                    message += r['navigationEndpoint']['urlEndpoint'].get('url')
+                    message_ex.append(r['navigationEndpoint']['urlEndpoint'].get('url'))
+                else:
+                    message += r.get('text', '')
+                    message_ex.append(r.get('text', ''))
         return message, message_ex
 
     def get_badges(self, renderer):
         self.chat.author.type = ''
+        self.chat.author.label = ''
         isVerified = False
         isChatOwner = False
         isChatSponsor = False
@@ -83,6 +95,7 @@ class BaseRenderer:
             if badge["liveChatAuthorBadgeRenderer"].get("customThumbnail"):
                 isChatSponsor = True
                 self.chat.author.type = 'MEMBER'
+                self.chat.author.label = badge["liveChatAuthorBadgeRenderer"]["accessibility"]["accessibilityData"]["label"]
                 self.get_badgeurl(badge)
         return isVerified, isChatOwner, isChatSponsor, isChatModerator
 
