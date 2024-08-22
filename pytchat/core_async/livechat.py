@@ -78,7 +78,7 @@ class LiveChatAsync:
                  seektime=-1,
                  processor=DefaultProcessor(),
                  buffer=None,
-                 client = httpx.AsyncClient(http2=True),
+                 client=None,
                  interruptable=True,
                  callback=None,
                  done_callback=None,
@@ -89,6 +89,8 @@ class LiveChatAsync:
                  logger=config.logger(__name__),
                  replay_continuation=None
                  ):
+        if client is None:
+            client = httpx.AsyncClient(http2=True)
         self._client:httpx.AsyncClient = client
         self._video_id = util.extract_video_id(video_id)
         self.member_stream = util.is_member_stream(self._video_id)
