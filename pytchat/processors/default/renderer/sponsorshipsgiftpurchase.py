@@ -15,9 +15,19 @@ class LiveChatSponsorshipsGiftPurchaseAnnouncementRenderer(BaseRenderer):
         )
         self.chat.author.channelId = self.item.get("authorExternalChannelId")
         self.chat.author.channelUrl = "http://www.youtube.com/channel/" + self.chat.author.channelId
-        self.chat.author.name = self.item["header"]["liveChatSponsorshipsHeaderRenderer"]["authorName"]["simpleText"]
-        self.chat.author.imageUrl = self.item["header"]["liveChatSponsorshipsHeaderRenderer"]["authorPhoto"]["thumbnails"][1]["url"]
+        header = self.item["header"]["liveChatSponsorshipsHeaderRenderer"]
+        self.chat.author.name = header["authorName"]["simpleText"]
+        self.chat.author.imageUrl = header["authorPhoto"]["thumbnails"][1]["url"]
         self.chat.author.isChatSponsor = True
+        dummy = [None, {"text": "0"}, None, None, None]
+        if "primaryText" in header.keys():
+            runs = header.get("primaryText", {}).get("runs", dummy)
+        else:
+            runs = dummy
+        if len(runs) == 5:
+            self.chat.amountString = runs[1]["text"]
+            self.chat.amountValue = float(self.chat.amountString)
+            self.chat.currency = "MGI"
 
     def get_message(self, item):
         message = ''.join([mes.get("text", "")
