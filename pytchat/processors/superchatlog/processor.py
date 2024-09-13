@@ -8,6 +8,8 @@ from ..default.renderer.legacypaid import LiveChatLegacyPaidMessageRenderer
 from ..default.renderer.donation import LiveChatDonationAnnouncementRenderer
 from ..default.renderer.placeholder import LiveChatPlaceholderItemRenderer
 from ..default.renderer.membership import LiveChatMembershipItemRenderer
+from ..default.renderer.sponsorshipsgiftredemption import LiveChatSponsorshipsGiftRedemptionAnnouncementRenderer
+from ..default.renderer.sponsorshipsgiftpurchase import LiveChatSponsorshipsGiftPurchaseAnnouncementRenderer
 from ..default.processor import Chat
 from ..default.processor import Chatdata
 from ..default.processor import DefaultProcessor
@@ -26,6 +28,8 @@ class SuperChatLogProcessor(DefaultProcessor):
             "liveChatPaidStickerRenderer": LiveChatPaidStickerRenderer(),
             "liveChatLegacyPaidMessageRenderer": LiveChatLegacyPaidMessageRenderer(),
             "liveChatMembershipItemRenderer": LiveChatMembershipItemRenderer(),
+            "liveChatSponsorshipsGiftPurchaseAnnouncementRenderer": LiveChatSponsorshipsGiftPurchaseAnnouncementRenderer(),
+            "liveChatSponsorshipsGiftRedemptionAnnouncementRenderer": LiveChatSponsorshipsGiftRedemptionAnnouncementRenderer(),
             "liveChatPlaceholderItemRenderer": LiveChatPlaceholderItemRenderer()
         }
         
