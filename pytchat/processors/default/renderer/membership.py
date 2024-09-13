@@ -30,12 +30,13 @@ class LiveChatMembershipItemRenderer(BaseRenderer):
         super().get_snippet()
         self.chat.member_level = "None"
         member_stage_msgs = self.item.get("headerSubtext", {}).get("simpleText", None)
+        dummy = [None,{"text":"0"},{"text":"unknown"}]
         if "message" in self.item.keys():
             if "headerPrimaryText" in self.item.keys():
-                runs = self.item.get("headerPrimaryText", {}).get("runs", [])
+                runs = self.item.get("headerPrimaryText", {}).get("runs", dummy)
             else:
-                runs = [None,{"text":"0"},{"text":"unknown"}]
-            if len(runs) == 1: # recent irregularity discovered. example content for runs in this case: [{'text': 'Member for 1 month'}]
+                runs = dummy
+            if len(runs) == 1: # irregularity discovered. example content for runs in this case: [{'text': 'Member for 1 month'}]
                 splitted = runs[0]["text"].split()
                 if len(splitted) >= 2:
                     runs.append({"text":splitted[-2]})
